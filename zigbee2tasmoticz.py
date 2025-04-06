@@ -144,7 +144,7 @@ def updateTemp(shortaddr,temperature,friendlyname):
               parts=svalue.split(';')
               parts[0]="{:.1f}".format(temperature)
               svalue=";".join(parts)
-              Devices[idx].Update(TypeName="Temp+Hum",nValue=0, sValue=svalue)
+              Devices[idx].Update(nValue=0, sValue=svalue)
               Domoticz.Log("Update Device {} Temperature {} {}".format(Devices[idx].Name,temperature, svalue))
            create=False
     if create:
@@ -171,10 +171,10 @@ def updateHumidity(shortaddr, humidity,friendlyname):
               svalue=Devices[idx].sValue
               Debug("Humidity svalue: {}".format(svalue))
               parts=svalue.split(';')
-              parts[1]=str(int(round(humidity)))
+              parts[1]=str(round(humidity, 1))
               parts[2]=humstat
               svalue=";".join(parts)
-              Devices[idx].Update(TypeName="Temp+Hum", sValue=svalue)
+              Devices[idx].Update(nValue=0, sValue=svalue)
               Domoticz.Log("Update Device {} Humidity {}, Svalue: {}".format(Devices[idx].Name,humidity,svalue))
            create=False
     if create:
@@ -238,8 +238,9 @@ def createDevice(deviceid, devicetype, name, nvalue, svalue, options={}):
     unit = findfreeUnit()
     Domoticz.Device(Name=name, Unit=unit, TypeName=devicetype, Used=1, DeviceID=deviceid, Options=options).Create()
     if unit in Devices:
+        Domoticz.Log(f"Created device {name} type {devicetype}")
 #        Devices[unit].Update(nValue=Devices[unit].nValue, sValue=Devices[unit].sValue, Name=name, SuppressTriggers=True)
-        Devices[unit].Update(nValue=nvalue, sValue=svalue)
+        #Devices[unit].Update(nValue=nvalue, sValue=svalue)
 #    for idx in Devices:
 #        if Devices[idx].DeviceID == deviceid:
 #           Devices[idx].Update(nValue=nvalue, sValue=svalue)
